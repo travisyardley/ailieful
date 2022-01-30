@@ -3,7 +3,7 @@
 # analysis.
 
 # Note: Windows has difficulty in displaying UTF-8 characters in the console so
-# for each console window you open, you may need #to type the following command
+# for each console window you open, you may need to type the following command
 # before running this code :    chcp 65001
 
 # Python Library imports :
