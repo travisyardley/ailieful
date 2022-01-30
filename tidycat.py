@@ -44,5 +44,6 @@ flavour_id INTERGER, analysis_id INTERGER, valcalc_id INTERGER, )
 # Pulling in HTML code from raw-data_db.sqlite for sorting.
 raw_sql.execute('SELECT parsetext FROM page_list')
 row = raw_sql.fetchone()
-for htmltag in row[2] :
-    stuff = 1
+for htmltags in row[2] :
+### DEBUGGING ###
+    print(htmltags)
