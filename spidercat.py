@@ -213,7 +213,7 @@ while True:
     except:
         print('\n-------------------')
         print('Unable to retrieve or parse page.')
-        print('Something went wrong in the request.urlopen TRY block.')
+        print('Something went wrong in the request.urlopen TRY block (line 180).')
         raw_sql.execute('UPDATE page_list SET errorcode=-1 WHERE url=?', (url, ) )
         raw_db.commit()
         continue
