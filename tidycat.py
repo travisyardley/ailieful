@@ -9,6 +9,7 @@
 # Python Library imports :
 import sqlite3 as sqlite
 import re
+from bs4 import BeautifulSoup as GoodSoup
 
 # Opens a connection for each database to be used, and limits the raw data to be read only.
 raw_db = sqlite.connect('file:raw-data_db.sqlite?mode=ro', uri=True)
@@ -28,12 +29,28 @@ eda_sql.execute('CREATE TABLE IF NOT EXISTS analysis_type(id BIT PRIMARY KEY, ty
 eda_sql.execute('INSERT OR IGNORE INTO analysis_type (type) VALUES (?)', ('ga'))
 eda_sql.execute('INSERT OR IGNORE INTO analysis_type (type) VALUES (?)', ('ta'))
 # As above, faking that boolean logic.
-eda_sql.execute('CREATE TABLE IF NOT EXISTS valcalc_type(id BIT PRIMARY KEY, type TEXT UNIQUE)')
+eda_sql.execute('CREATE TABLE IF NOT EXISTS valcalc_type (id BIT PRIMARY KEY, type TEXT UNIQUE)')
 eda_sql.execute('INSERT OR IGNORE INTO valcalc_type (type) VALUES (?)', ('dmb'))
 eda_sql.execute('INSERT OR IGNORE INTO valcalc_type (type) VALUES (?)', ('wmb'))
+# The composite table for each can_value entry.
+eda_sql.execute('''CREATE TABLE IF NOT EXISTS can_values (id INTERGER PRIMARY KEY, company_id INTERGER, brand_id INTERGER, 
+flavour_id INTERGER, analysis_id INTERGER, valcalc_id INTERGER, )
+''')
 
 # Building tidycat specific functions.
 
 
 # Pulling in HTML code from raw-data_db.sqlite for sorting.
- 
+raw_sql.execute('SELECT parsetext FROM page_list')
+row = raw_sql.fetchone()
+soup = GoodSoup(row, 'html.parser')
+raw_sqldata = soup('a')
+
+# Read through the GA and TA analysis info.
+ga_dict = dict()
+ga_data = re.findall('[]', raw_sqldata)
+for tags in ga_data :
+    
+dmb_dict = dict()
+dmb_data = re.findall('[]', raw_sqldata)
+for tags in dmb_data :

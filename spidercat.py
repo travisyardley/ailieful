@@ -80,11 +80,14 @@ agent_headers = [
 # DON'T BE SUSPICIOUS!
 # Building a dictionary for the User Agent randomizer, because again: cat food. 
 agent_list = []
+
 for headers in agent_headers:
     h = dict()
+
 for header,value in headers.items() :
     h[header]=value
     agent_list.append(h)
+
 url = 'https://httpbin.org/headers'
 
 # Randomizes agent selection.
@@ -119,14 +122,19 @@ if row is not None :
 else :
     print('Enter a URL to add to the crawl list, or press enter to run the crawl_list as is.')
     starturl = input(' ')
+
     if len(starturl) < 1 :
         starturl = random.choice(crawl_list)
+
     if ( starturl.endswith('/') ) : 
         starturl = starturl[:-1]
+
     if ( starturl.endswith('.htm') or starturl.endswith('.html') ) :
         pos = starturl.rfind('/')
         starturl = starturl[:pos]
+
     weburl = starturl
+
     if ( len(weburl) > 1 ) :
         raw_sql.execute('INSERT OR IGNORE INTO crawl_list (url) VALUES (?)', (weburl,))
         raw_sql.execute('INSERT OR IGNORE INTO page_list (url, parsetext) VALUES (?, NULL)', (starturl,))
@@ -135,19 +143,25 @@ else :
 # Get the current website from crawl_list
 raw_sql.execute('SELECT url FROM crawl_list')
 weblist = list()
+
 for row in raw_sql:
     weblist.append(str(row[0:]))
+
 print(weblist)
 itcounter = 0
+
 while True:
     if ( itcounter < 1 ) :
         print('Enter the number of pages to retrieve, or press ENTER to break.')
         sval = input(' ')
         if ( len(sval) < 1 ) :
             break
+
         itcounter = int(sval)
+
     itcounter = itcounter - 1
     raw_sql.execute('SELECT id,url FROM page_list WHERE parsetext is NULL and errorcode is NULL ORDER BY RANDOM() LIMIT 1')
+
     try:
         row = raw_sql.fetchone()
 ### DEBUGGING ###
@@ -159,6 +173,7 @@ while True:
         print('No unretrieved HTML pages found. Closing the spidercat.')
         itcounter = 0
         break
+
     print(fromid, url, end=' ')
 
 # Generates the secret User-Agent to used for the request.
@@ -180,23 +195,29 @@ while True:
         if html.getcode() != 200 :
             print('Error flagged: ',html.getcode())
             raw_sql.execute('UPDATE page_list SET errorcode=? WHERE url=?', (html.getcode(), url))
+
         if 'text/html' != html.info().get_content_type() :
             print('This page did no contain text or html to parse.')
             raw_sql.execute('DELETE FROM page_list WHERE url=?', (url,))
             raw_db.commit()
             continue
+
         print('('+str(len(html))+')', end=' ')
         soup = GoodSoup(html, 'html.parser')
+
     except KeyboardInterrupt :
         print('-------------------')
         print('Program manually stopped.')
         break
+
     except:
         print('\n-------------------')
-        print('Unable to retrieve or parse page.\nSomething went wrong in the request.urlopen TRY block.')
+        print('Unable to retrieve or parse page.')
+        print('Something went wrong in the request.urlopen TRY block.')
         raw_sql.execute('UPDATE page_list SET errorcode=-1 WHERE url=?', (url, ) )
         raw_db.commit()
         continue
+
     raw_sql.execute('INSERT OR IGNORE INTO page_list (url, parsetext) VALUES ( ?, NULL)', (url,))
     raw_sql.execute('UPDATE page_list SET parsetext=? WHERE url=?', (memoryview(html), url ))
     raw_db.commit()
@@ -205,20 +226,27 @@ while True:
 # relative references, or tricky CSS honeypotting nonsense.
     pagetags = soup('')
     counter = 0
+
     for tag in pagetags:
         href = tag.get('href', None)
+
         if ( href is None ) :
             continue
+
         up = urlparse(href)
         if ( len(up.scheme) < 1 ) :
             href = urljoin(url, href)
+
         ipos = href.find('#')
         if ( ipos > 1 ) :
             href = href[:ipos]
+
         if ( href.endswith('.png') or href.endswith('.jpg') or href.endswith('.gif') or href.endswith('.pdf') ) :
             continue
+
         if ( href.endswith('/') ) :
             href = href[:-1]
+
         if ( len(href) < 1 ) :
             continue
 
@@ -228,17 +256,21 @@ while True:
             if ( href.startswith(web) ) :
                 found = True
                 break
+
         if not found :
             continue
+
         raw_sql.execute('INSERT OR IGNORE INTO page_list (url, parsetext) VALUES (?, ?)', ( href, html))
         counter = counter + 1
         raw_db.commit()
         raw_sql.execute('SELECT id FROM page_list WHERE url=? LIMIT 1', ( href,))
+
         try :
             row = raw_sql.fetchone()
             toid = row[0]
         except :
             print('Could not retrieve id')
             continue
+        
     print(counter)
 raw_sql.close()
