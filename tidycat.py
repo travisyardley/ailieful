@@ -7,6 +7,7 @@
 # before running this code :    chcp 65001
 
 # Python Library imports :
+from curses.ascii import FF
 import sqlite3 as sqlite
 import re
 from bs4 import BeautifulSoup as GoodSoup
@@ -43,14 +44,5 @@ flavour_id INTERGER, analysis_id INTERGER, valcalc_id INTERGER, )
 # Pulling in HTML code from raw-data_db.sqlite for sorting.
 raw_sql.execute('SELECT parsetext FROM page_list')
 row = raw_sql.fetchone()
-soup = GoodSoup(row, 'html.parser')
-raw_sqldata = soup('a')
-
-# Read through the GA and TA analysis info.
-ga_dict = dict()
-ga_data = re.findall('[]', raw_sqldata)
-for tags in ga_data :
-    
-dmb_dict = dict()
-dmb_data = re.findall('[]', raw_sqldata)
-for tags in dmb_data :
+for htmltag in row[2] :
+    stuff = 1
