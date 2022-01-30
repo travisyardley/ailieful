@@ -7,3 +7,21 @@
 # before running this code :    chcp 65001
 
 # Python Library imports :
+import sqlite3 as sqlite
+
+# Establishes connection to SQL server and an associated cursor method.
+eda_db = sqlite.connect('eda-data_db.sqlite')
+eda_sql = eda_db.cursor()
+
+# Checks the database to ensure the correct tables exists, and generates them
+# if they are missing.
+eda_sql.execute('CREATE TABLE IF NOT EXISTS companies (id INTEGER PRIMARY KEY, company TEXT UNIQUE)')
+eda_sql.execute('CREATE TABLE IF NOT EXISTS brands (id INTEGER PRIMARY KEY, brand TEXT UNIQUE)')
+eda_sql.execute('CREATE TABLE IF NOT EXISTS flavours (id INTEGER PRIMARY KEY, flavour TEXT UNIQUE)')
+eda_sql.execute('CREATE TABLE IF NOT EXISTS companies (id INTEGER PRIMARY KEY, company TEXT UNIQUE)')
+eda_sql.execute('CREATE TABLE IF NOT EXISTS analysis_type(id BIT PRIMARY KEY, type TEXT UNIQUE)')
+eda_sql.execute('INSERT OR IGNORE INTO analysis_type (type) VALUES ('ga')')
+eda_sql.execute('INSERT OR IGNORE INTO analysis_type (type) VALUES ('ta')')
+eda_sql.execute('CREATE TABLE IF NOT EXISTS valcalc_type(id BIT PRIMARY KEY, type TEXT UNIQUE)')
+eda_sql.execute('INSERT OR IGNORE INTO valcalc_type (type) VALUES ('dmb')')
+eda_sql.execute('INSERT OR IGNORE INTO valcalc_type (type) VALUES ('wmb')')

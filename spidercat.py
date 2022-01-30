@@ -128,8 +128,8 @@ else :
         starturl = starturl[:pos]
     weburl = starturl
     if ( len(weburl) > 1 ) :
-        raw_sql.execute('INSERT OR IGNORE INTO crawl_list (url) VALUES ( ? )', ( weburl, ) )
-        raw_sql.execute('INSERT OR IGNORE INTO page_list (url, parsetext) VALUES ( ?, NULL)', ( starturl,) )
+        raw_sql.execute('INSERT OR IGNORE INTO crawl_list (url) VALUES (?)', (weburl,))
+        raw_sql.execute('INSERT OR IGNORE INTO page_list (url, parsetext) VALUES (?, NULL)', (starturl,))
         raw_db.commit()
 
 # Get the current website from crawl_list
@@ -179,10 +179,10 @@ while True:
 # any text or HTML to parse.
         if html.getcode() != 200 :
             print('Error flagged: ',html.getcode())
-            raw_sql.execute('UPDATE page_list SET errorcode=? WHERE url=?', (html.getcode(), url) )
+            raw_sql.execute('UPDATE page_list SET errorcode=? WHERE url=?', (html.getcode(), url))
         if 'text/html' != html.info().get_content_type() :
             print('This page did no contain text or html to parse.')
-            raw_sql.execute('DELETE FROM page_list WHERE url=?', ( url, ) )
+            raw_sql.execute('DELETE FROM page_list WHERE url=?', (url,))
             raw_db.commit()
             continue
         print('('+str(len(html))+')', end=' ')
@@ -197,8 +197,8 @@ while True:
         raw_sql.execute('UPDATE page_list SET errorcode=-1 WHERE url=?', (url, ) )
         raw_db.commit()
         continue
-    raw_sql.execute('INSERT OR IGNORE INTO page_list (url, parsetext) VALUES ( ?, NULL)', ( url,) )
-    raw_sql.execute('UPDATE page_list SET parsetext=? WHERE url=?', (memoryview(html), url ) )
+    raw_sql.execute('INSERT OR IGNORE INTO page_list (url, parsetext) VALUES ( ?, NULL)', (url,))
+    raw_sql.execute('UPDATE page_list SET parsetext=? WHERE url=?', (memoryview(html), url ))
     raw_db.commit()
 
 # Searching for additional links on the page; checking for inaccessable suffixes,
@@ -230,10 +230,10 @@ while True:
                 break
         if not found :
             continue
-        raw_sql.execute('INSERT OR IGNORE INTO page_list (url, parsetext) VALUES ( ?, ?)', ( href, html) )
+        raw_sql.execute('INSERT OR IGNORE INTO page_list (url, parsetext) VALUES (?, ?)', ( href, html))
         counter = counter + 1
         raw_db.commit()
-        raw_sql.execute('SELECT id FROM page_list WHERE url=? LIMIT 1', ( href, ))
+        raw_sql.execute('SELECT id FROM page_list WHERE url=? LIMIT 1', ( href,))
         try :
             row = raw_sql.fetchone()
             toid = row[0]
