@@ -1,6 +1,6 @@
 # sypdercat.py was designed to crawl through a predefined array of websites,
-# record html on raw-data_db.sqlite, and scrape those pages for an exploratory data
-# analysis.
+# record html on raw-data_db.sqlite, and scrape those pages for an exploratory
+# data analysis.
 
 # Note: Windows has difficulty in displaying UTF-8 characters in the console so
 # for each console window you open, you may need #to type the following command
