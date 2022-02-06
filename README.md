@@ -4,4 +4,4 @@ And just like that, we needed to take a very serious look at our cats' diets. On
 
 This is a multi-program, functioning data pipeline for evaluating... cat food. Yeah. I know, it seems weird; but as it turns out this data set actually presents a number of interesting challenges: non-standardized itemization, differing or mixed systems of measurment, unlisted values that we'll need to derive. What started off as an afternoon on Excel quickly escalated, as the more I looked into this the more holes I uncovered.
 
-At the heart of this project are three key programs: spidercat, tidycat, and vizcat
+At the heart of this project are three key programs: spidercat, tidycat, and vizcat.
